@@ -78,6 +78,7 @@ void loop() {
   //  Get mqSensor value
   int mqValue=0;
   // read mq sensor at intervals
+  Serial.println("Taking sensor readings.");
   mqValue = mqIntervalReading();
   //  Push data to server if sensor records a dangerous value indicating smoke
   if(mqValue > threshold){
@@ -85,12 +86,14 @@ void loop() {
   digitalWrite(buzzer,HIGH); // Sound the buzzer to draw attention
   postData(mqValue);  // Push data to server
   }
-  
+  else{
+    Serial.println("No dangerous data recored\nProceeding");
+   }
   delay(10000); // Wait for 10s before taking next reading
   // if the server's disconnected, stop the client:
-  if (!client.connected()) {
+  if (status != WL_CONNECTED) {
     Serial.println();
-    Serial.println("disconnecting from server.");
+    Serial.println("Wireless Network Disconnected.");
     client.end();
    
   }
